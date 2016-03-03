@@ -1,7 +1,7 @@
 angular.module('forumApp', ['ui.router', 'firebase'])
 .constant('fb', {'url': 'https://chatroomnv.firebaseio.com/'})
 .config(function($stateProvider, $urlRouterProvider){
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('/threads');
     $stateProvider
     .state('threads', {
         url: '/threads',
@@ -14,13 +14,17 @@ angular.module('forumApp', ['ui.router', 'firebase'])
         }
     })
     .state('thread', {
-        url: '/threads/:thredId',
-        templateUrl: '../views/thread.html',
-        controller: 'baseCtrl',
-        // resolve: {
-        //   threadsRef: function(threadsService, $stateParams){
-        //     return threadsService.getThreads();
-        //   }
-        // }
+        url: '/threads/:threadId',
+        templateUrl: './views/thread.html',
+        controller: 'threadCtrl',
+        resolve: {
+          threadRef: function(threadsService, $stateParams){
+            console.log($stateParams)
+            return threadsService.getThread($stateParams.threadId);
+          },
+          commentsRef: function(threadsService, $stateParams){
+            return threadsService.getComments($stateParams.threadId);
+          }
+        }
     });
 });
